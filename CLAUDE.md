@@ -150,6 +150,17 @@ node "$dst\hermes-mcp\e2e.mjs"; node "$dst\openclaw-mcp\e2e.mjs"
 Перевірка: обидва e2e закінчуються `*-MCP-OK` з `isError=false`, а рядок `[hermes: model=…]` / `[openclaw: model=…]`
 показує безкоштовну модель. Нові інструменти з'являться в Claude Code після перезапуску сесії або `/mcp`.
 
+**Правило делегування для Claude.** Саме воно дає економію підписки: Claude віддає рутину Hermes і OpenClaw, а сам вирішує й перевіряє.
+Покажи власнику [rules/claude-CLAUDE-append.md](rules/claude-CLAUDE-append.md), отримай згоду і допиши файл у кінець
+`%USERPROFILE%\.claude\CLAUDE.md` (немає — створи). Якщо розділ «Делегування Hermes і OpenClaw» там уже є, не дублюй.
+
+```powershell
+$g = "$env:USERPROFILE\.claude\CLAUDE.md"
+if (-not (Test-Path $g) -or -not (Select-String -Path $g -Pattern 'Делегування Hermes і OpenClaw' -Quiet)) {
+  Add-Content -Path $g -Value (Get-Content rules\claude-CLAUDE-append.md -Raw -Encoding UTF8) -Encoding UTF8
+}
+```
+
 ## Фаза 5. Ключі LLM (за бажанням користувача, але OpenRouter — бажано)
 
 Попроси скопіювати `keys.env.example` → `keys.env` і вписати ключі. Посилання на реєстрацію є у файлі.

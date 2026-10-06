@@ -70,7 +70,9 @@ gh repo clone mstekh/openclaw-hermes-setup; cd openclaw-hermes-setup; claude
    - безкоштовні моделі Nous із запасними;
    - GitHub Copilot як останній запасний варіант;
    - доступ до файлів ПК (`SOUL.md`).
-4. Встановлює MCP-мости `hermes-mcp` і `openclaw-mcp` у Claude Code та проганяє їхні e2e-тести.
+4. Встановлює MCP-мости `hermes-mcp` і `openclaw-mcp` у Claude Code та проганяє їхні e2e-тести. Після твоєї згоди дописує
+   в глобальний `CLAUDE.md` правило делегування: рутину (читання багатьох файлів, логи, чернетки) Claude віддає безкоштовним
+   агентам, а ліміт підписки витрачає на рішення й перевірку.
 5. Запускає `scripts/apply-free-llm-keys.ps1`. Скрипт розкладає ключі в обидва агенти, перевіряє кожну модель живим запитом і перебудовує ланцюжки.
 6. Запускає `scripts/setup-telegram-bots.ps1`. Скрипт підключає ботів і дозволяє писати їм лише тобі.
 7. Перевіряє все наприкінці й показує таблицю стану.
@@ -84,6 +86,7 @@ scripts/
   apply-free-llm-keys.ps1     ключі LLM -> Hermes + OpenClaw, живі перевірки, ланцюжки моделей
   setup-telegram-bots.ps1     два Telegram-боти: OpenClaw і Hermes, доступ лише власнику
 rules/
+  claude-CLAUDE-append.md     правило для Claude Code: що віддавати Hermes/OpenClaw, щоб економити підписку
   hermes-SOUL-append.md       правила роботи Hermes (дописуються в SOUL.md)
   openclaw-AGENTS-append.md   правила роботи OpenClaw (дописуються в AGENTS.md робочої теки)
   openclaw-USER.md            директиви про власника для OpenClaw (замінює USER.md)
