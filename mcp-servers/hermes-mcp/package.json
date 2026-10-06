@@ -1,0 +1,12 @@
+{
+  "name": "hermes-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Exposes the Hermes Agent CLI as an MCP server so orchestrating agents can delegate to it.",
+  "bin": { "hermes-mcp": "index.mjs" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.22.0",
+    "zod": "^3.25.0"
+  }
+}

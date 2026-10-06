@@ -1,0 +1,12 @@
+# Ключі й токени — ніколи в git
+keys.env
+*.env
+!keys.env.example
+
+# Звіти скриптів і залежності
+reports/
+node_modules/
+package-lock.json
+
+# Резервні копії, які створюють скрипти
+*.bak-*
