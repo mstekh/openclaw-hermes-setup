@@ -2,7 +2,8 @@
 .SYNOPSIS
   Розкладає ключі безкоштовних LLM-провайдерів з keys.env (корінь репозиторію) у Hermes (Windows) і OpenClaw
   (WSL-дистрибутив OpenClawGateway), перевіряє кожну модель живим запитом і перебудовує ланцюжки
-  запасних моделей. Основною ставить найсильнішу модель, що пройшла перевірку (NVIDIA -> Gemini -> Z.ai).
+  запасних моделей. Основною ставить найсильнішу модель, що пройшла перевірку (NVIDIA -> Z.ai).
+  Gemini основною не ставиться: безкоштовна квота AI Studio (~20 запитів/день на модель) закінчується за кілька задач агента.
 
 .PARAMETER DryRun     Лише перевірити ключі (GET /models у провайдера) і показати план. Нічого не змінює.
 .PARAMETER KeepKeys   Не стирати застосовані ключі з файлу ключів.
@@ -34,7 +35,7 @@ $Catalog = @(
   @{ env='NVIDIA_API_KEY'; name='NVIDIA Build'; base='https://integrate.api.nvidia.com/v1'; primary=$true; maxModels=3
      want=@('moonshotai/kimi-k2.5','z-ai/glm-5.1','deepseek-ai/deepseek-v3.2','qwen/qwen3.5*')
      hermes='nvidia'; ocMode='plugin'; ocProvider='nvidia' },
-  @{ env='GEMINI_API_KEY'; name='Google AI Studio'; base='https://generativelanguage.googleapis.com/v1beta/openai'; primary=$true; maxModels=3
+  @{ env='GEMINI_API_KEY'; name='Google AI Studio'; base='https://generativelanguage.googleapis.com/v1beta/openai'; primary=$false; maxModels=3
      want=@('gemini-3.5-flash','gemini-3.8-flash','gemini-2.5-pro','gemini-3.5-flash-lite')
      hermes='gemini'; ocMode='plugin'; ocProvider='google' },
   @{ env='ZAI_API_KEY'; name='Z.ai'; base='https://api.z.ai/api/paas/v4'; primary=$true; maxModels=2

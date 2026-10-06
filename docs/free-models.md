@@ -15,16 +15,21 @@
 | Hermes | `nous / poolside/laguna-s-2.1:free` | nous: `stepfun/step-3.7-flash:free`, `poolside/laguna-xs-2.1:free`, `meituan/longcat-2.5-preview:free` → copilot: `gpt-5-mini`, `gpt-4.1` |
 | OpenClaw | `openrouter/nvidia/nemotron-3-super-120b-a12b:free` | `laguna-s-2.1`, `gemma-4-31b-it`, `nemotron-3.5-lightning`, `nemotron-3-ultra-550b`, `laguna-xs-2.1`, `north-mini-code`, `dots-3-note-preview` (усі `:free` на OpenRouter), `openrouter/free` |
 
-З ключем Google AI Studio (налаштовано 6.10.2026):
+З ключем Google AI Studio (остаточно налаштовано 6.10.2026). Gemini — **лише запасна**:
 
 | Агент | Основна | Запасні (по черзі) |
 |---|---|---|
-| Hermes | `gemini / gemini-3.5-flash` | gemini: `gemini-3.8-flash`, `gemini-2.5-pro` → увесь ланцюжок Nous → copilot. Плюс `agent.api_max_retries: 1` |
-| OpenClaw | `google/gemini-3.5-flash` | `google/gemini-3.8-flash` → увесь ланцюжок OpenRouter `:free` вище |
+| Hermes | `nous / poolside/laguna-s-2.1:free` | gemini 3.5 Flash → copilot gpt-5-mini → nous step-3.7-flash → gemini 3.8 Flash → nous laguna-xs → copilot gpt-4.1 → gemini 2.5 Pro → nous longcat. Плюс `agent.api_max_retries: 1` |
+| OpenClaw | `openrouter/nvidia/nemotron-3-super-120b-a12b:free` | `google/gemini-3.5-flash` → `laguna-s-2.1` → `google/gemini-3.8-flash` → решта OpenRouter `:free` |
 
-Чому основна саме 3.5 Flash, а не новіша 3.8: на безкоштовному тарифі 3.8 Flash того дня часто відповідала
-`503 high demand`, і одна відповідь тягнулась 40–109 с. 3.5 Flash за той самий час відмов не дала: 8–22 с на запит.
-`google/gemini-2.5-pro` OpenClaw не знайшов у своєму каталозі (`NOT_FOUND`), у Hermes ця модель працює.
+Чому Gemini не основна:
+- Безкоштовну квоту ключа AI Studio вичерпали приблизно 20 запитів за день: далі `429 You exceeded your current quota` на обидві Flash-моделі. Hermes сам пише про це: «free tier is exhausted in a handful of messages and cannot sustain an agent session».
+- 3.8 Flash ще й часто відповідає `503 high demand` (40–109 с на відповідь). 3.5 Flash у тих самих пробах відмов не дала.
+- `google/gemini-2.5-pro` OpenClaw у своєму каталозі не знайшов (`NOT_FOUND`), у Hermes працює.
+
+**Чергування провайдерів.** На 429 і Hermes, і OpenClaw ставлять паузу всьому провайдеру, а не одній моделі
+(у Nous бачили 34 хв). Тому в ланцюжку провайдери чергуються. Ліміт OpenRouter до того ж спільний для всіх його `:free`-моделей.
+Перевірено: коли Gemini віддав 429, OpenClaw за 2.7 с перейшов на `nemotron-3-super:free`, і задача з `exec` пройшла.
 
 Платний `openrouter/auto` в OpenClaw лишився аліасом `OpenRouter` для ручного перемикання. Він коштує ≈ $0.002–0.01 за запит.
 

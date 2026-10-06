@@ -72,6 +72,16 @@ wsl.exe -d OpenClawGateway -e /usr/local/bin/openclaw gateway status  # Runtime:
 
 У JSON очікуй `"status": "ok"`, `successfulToolNames` з `exec`, `cost` 0. `--message-file /dev/stdin` під wsl.exe дає EACCES, тому через тимчасовий файл.
 
+5. Правила роботи OpenClaw. Робоча тека `/home/openclaw/.openclaw/workspace`. Зроби копії й запиши правила через stdin:
+   ```powershell
+   wsl.exe -d OpenClawGateway -e bash -c 'cd ~/.openclaw/workspace && cp AGENTS.md AGENTS.md.bak && cp USER.md USER.md.bak'
+   $OutputEncoding = New-Object Text.UTF8Encoding $false   # інакше PowerShell 5.1 передасть кирилицю як '?'
+   (Get-Content rules\openclaw-AGENTS-append.md -Raw -Encoding UTF8) | wsl.exe -d OpenClawGateway -e bash -c 'tr -d \\015 >> ~/.openclaw/workspace/AGENTS.md'
+   ```
+   `USER.md` заміни на [rules/openclaw-USER.md](rules/openclaw-USER.md): підстав ім'я власника і сьогоднішню дату замість
+   `YYYY-MM-DD`. У файлі з плейсхолдером директиву не можна лишати `active`. Застереження про чутливі дані — як для Hermes, у фазі 3.
+   Перевірка: спитай агента, де йому можна класти файли на Windows і що потрібно перед командою на Windows.
+
 ## Фаза 3. Hermes
 
 1. Встановлення (нативний Windows, без WSL):
@@ -92,21 +102,27 @@ wsl.exe -d OpenClawGateway -e /usr/local/bin/openclaw gateway status  # Runtime:
 4. Ланцюжок запасних моделей. Додай у `%LOCALAPPDATA%\hermes\config.yaml` **окремим блоком верхнього рівня**,
    після кінця блоку `model:`, перед `# Named provider overrides`. Якщо вставити посередині `model:`,
    Hermes перестане стартувати.
+   **Провайдери в ланцюжку мають чергуватися.** На 429 Hermes ставить паузу всьому провайдеру (у Nous бачили 34 хв),
+   тож дві моделі одного провайдера поспіль марні. Без ключа Gemini:
    ```yaml
    fallback_providers:
-     - provider: "nous"
-       model: "stepfun/step-3.7-flash:free"
-     - provider: "nous"
-       model: "poolside/laguna-xs-2.1:free"
-     - provider: "nous"
-       model: "meituan/longcat-2.5-preview:free"
      - provider: "copilot"
        model: "gpt-5-mini"
+     - provider: "nous"
+       model: "stepfun/step-3.7-flash:free"
      - provider: "copilot"
        model: "gpt-4.1"
+     - provider: "nous"
+       model: "poolside/laguna-xs-2.1:free"
    ```
-5. Доступ до файлів. Допиши в `%LOCALAPPDATA%\hermes\SOUL.md`, бо слабкі безкоштовні моделі інакше кажуть «не можу читати файли»:
-   > You run locally on the owner's Windows PC (home folder %USERPROFILE%). Your terminal and file tools act directly on this machine's disk. When asked about files or folders, list, read, search or edit them with those tools — never ask the user to paste or upload file contents, and never claim you cannot access local files.
+   Після фази 5 з ключем Gemini скрипт додасть моделі `gemini` на початок. Розстав їх через одну між `copilot` і `nous`,
+   як у [docs/free-models.md](docs/free-models.md).
+   Ще в секції `agent:` того ж файлу постав `api_max_retries: 1`: інакше Hermes тричі повторює модель, що відповідає 429/503,
+   замість того щоб одразу перейти на запасну.
+5. Правила роботи й доступ до файлів. Допиши вміст [rules/hermes-SOUL-append.md](rules/hermes-SOUL-append.md) у кінець
+   `%LOCALAPPDATA%\hermes\SOUL.md`. Перший абзац обов'язковий: без нього слабкі безкоштовні моделі кажуть «не можу читати файли».
+   Спитай власника, які теки й проєкти дописати на місці коментаря `<!-- … -->`. IP-адреси серверів, токени, ID в Telegram
+   у правила не вписуй: системний промпт іде на безкоштовні моделі, які можуть зберігати запити й навчатися на них.
 
 Перевірка:
 
@@ -115,9 +131,8 @@ hermes config check
 "Can you read files on this pc? Prove it: list the names of 3 folders in $env:USERPROFILE\Desktop." | hermes chat --query-file - -Q --source tool --max-turns 6
 ```
 
-Якщо в `keys.env` є `GEMINI_API_KEY`, скрипт фази 5 поставить основною `gemini-3.5-flash`. Тоді додай:
-- Hermes: `agent.api_max_retries: 1` у `config.yaml` (секція `agent:`), якщо основна — Gemini Flash: на безкоштовному тарифі
-  часті 503 «high demand», і з 3 повторами відповідь тягнеться до 2 хв.
+Перевірка правил: на питання «якою мовою відповідаєш і куди кладеш допоміжні файли» Hermes має назвати українську і теки `_CLAUDE`.
+
 ## Фаза 4. MCP-мости в Claude Code
 
 ```powershell

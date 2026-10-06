@@ -20,5 +20,8 @@
 | Кирилиця в `.ps1` перетворюється на сміття | Windows PowerShell 5.1 читає файл без BOM як ANSI | Зберігати скрипти в UTF-8 **з BOM** |
 | OpenClaw не читає файли Windows, поки ти не за ПК | Команди на Windows ідуть через node, і кожну треба схвалити в треї (`askFallback=deny`) | Або бути поруч, або свідомо внести читальні команди в allowlist node |
 | Gemini Flash відповідає 40–110 с замість 5–10 | `503 This model is currently experiencing high demand` на безкоштовному тарифі; Hermes за замовчуванням тричі повторює ту саму модель | Основною брати менш завантажену модель (3.5 Flash), в Hermes поставити `agent.api_max_retries: 1`, щоб швидше перейти на запасні |
+| Gemini раптом відповідає `429 You exceeded your current quota` на всі Flash-моделі | Безкоштовна квота ключа AI Studio — приблизно 20 запитів на день; агент робить 3–10 запитів на одну задачу | Gemini тримати лише запасною, основну брати з Nous (Hermes) чи OpenRouter (OpenClaw) |
+| Hermes: «No reply… tool result was still pending» | Основна модель дала 429, наступна в ланцюжку була того ж провайдера, і Hermes поставив паузу всьому провайдеру | Чергувати провайдерів у `fallback_providers` |
+| Кирилиця, передана в WSL через `\|` з PowerShell 5.1, стає `?` | `$OutputEncoding` у Windows PowerShell 5.1 за замовчуванням ASCII | `$OutputEncoding = New-Object Text.UTF8Encoding $false` перед пайпом |
 | Після `hermes config set/unset` з `config.yaml` зникли сотні рядків коментарів | `unset` видаляє ключ разом із прив'язаними до нього коментарями (приклади провайдерів у блоці `model:`) | На роботу не впливає; повна версія лишається в `config.yaml.bak-*` |
 | Два агенти на одному Telegram-боті «гублять» повідомлення | Два процеси опитують один токен (409 Conflict) | Окремий бот на кожного агента |
