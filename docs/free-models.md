@@ -8,10 +8,23 @@
 
 ## Ланцюжки після налаштування
 
+Без ключа Gemini (лише Nous / OpenRouter / Copilot):
+
 | Агент | Основна | Запасні (по черзі) |
 |---|---|---|
 | Hermes | `nous / poolside/laguna-s-2.1:free` | nous: `stepfun/step-3.7-flash:free`, `poolside/laguna-xs-2.1:free`, `meituan/longcat-2.5-preview:free` → copilot: `gpt-5-mini`, `gpt-4.1` |
 | OpenClaw | `openrouter/nvidia/nemotron-3-super-120b-a12b:free` | `laguna-s-2.1`, `gemma-4-31b-it`, `nemotron-3.5-lightning`, `nemotron-3-ultra-550b`, `laguna-xs-2.1`, `north-mini-code`, `dots-3-note-preview` (усі `:free` на OpenRouter), `openrouter/free` |
+
+З ключем Google AI Studio (налаштовано 6.10.2026):
+
+| Агент | Основна | Запасні (по черзі) |
+|---|---|---|
+| Hermes | `gemini / gemini-3.5-flash` | gemini: `gemini-3.8-flash`, `gemini-2.5-pro` → увесь ланцюжок Nous → copilot. Плюс `agent.api_max_retries: 1` |
+| OpenClaw | `google/gemini-3.5-flash` | `google/gemini-3.8-flash` → увесь ланцюжок OpenRouter `:free` вище |
+
+Чому основна саме 3.5 Flash, а не новіша 3.8: на безкоштовному тарифі 3.8 Flash того дня часто відповідала
+`503 high demand`, і одна відповідь тягнулась 40–109 с. 3.5 Flash за той самий час відмов не дала: 8–22 с на запит.
+`google/gemini-2.5-pro` OpenClaw не знайшов у своєму каталозі (`NOT_FOUND`), у Hermes ця модель працює.
 
 Платний `openrouter/auto` в OpenClaw лишився аліасом `OpenRouter` для ручного перемикання. Він коштує ≈ $0.002–0.01 за запит.
 

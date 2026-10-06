@@ -35,7 +35,7 @@ $Catalog = @(
      want=@('moonshotai/kimi-k2.5','z-ai/glm-5.1','deepseek-ai/deepseek-v3.2','qwen/qwen3.5*')
      hermes='nvidia'; ocMode='plugin'; ocProvider='nvidia' },
   @{ env='GEMINI_API_KEY'; name='Google AI Studio'; base='https://generativelanguage.googleapis.com/v1beta/openai'; primary=$true; maxModels=3
-     want=@('gemini-3.8-flash','gemini-3.5-flash','gemini-2.5-pro','gemini-3.5-flash-lite')
+     want=@('gemini-3.5-flash','gemini-3.8-flash','gemini-2.5-pro','gemini-3.5-flash-lite')
      hermes='gemini'; ocMode='plugin'; ocProvider='google' },
   @{ env='ZAI_API_KEY'; name='Z.ai'; base='https://api.z.ai/api/paas/v4'; primary=$true; maxModels=2
      want=@('glm-4.7-flash','glm-4.5-flash')

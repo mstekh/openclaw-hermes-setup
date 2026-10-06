@@ -115,6 +115,9 @@ hermes config check
 "Can you read files on this pc? Prove it: list the names of 3 folders in $env:USERPROFILE\Desktop." | hermes chat --query-file - -Q --source tool --max-turns 6
 ```
 
+Якщо в `keys.env` є `GEMINI_API_KEY`, скрипт фази 5 поставить основною `gemini-3.5-flash`. Тоді додай:
+- Hermes: `agent.api_max_retries: 1` у `config.yaml` (секція `agent:`), якщо основна — Gemini Flash: на безкоштовному тарифі
+  часті 503 «high demand», і з 3 повторами відповідь тягнеться до 2 хв.
 ## Фаза 4. MCP-мости в Claude Code
 
 ```powershell
