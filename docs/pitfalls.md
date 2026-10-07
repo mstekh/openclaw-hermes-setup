@@ -25,3 +25,6 @@
 | Кирилиця, передана в WSL через `\|` з PowerShell 5.1, стає `?` | `$OutputEncoding` у Windows PowerShell 5.1 за замовчуванням ASCII | `$OutputEncoding = New-Object Text.UTF8Encoding $false` перед пайпом |
 | Після `hermes config set/unset` з `config.yaml` зникли сотні рядків коментарів | `unset` видаляє ключ разом із прив'язаними до нього коментарями (приклади провайдерів у блоці `model:`) | На роботу не впливає; повна версія лишається в `config.yaml.bak-*` |
 | Два агенти на одному Telegram-боті «гублять» повідомлення | Два процеси опитують один токен (409 Conflict) | Окремий бот на кожного агента |
+| `apply-free-llm-keys.ps1`: «моделі для перевірки» порожні, OpenClaw каже `Unknown model` | ID у каталозі скрипта застарілі, а каталог OpenClaw для провайдера не оновлено | Звірити ID з `/v1/models` провайдера; в OpenClaw виконати `openclaw models list --refresh --provider nvidia` |
+| Перша ж відмова `model_not_found` кладе ключ провайдера в cooldown, запасні моделі не спрацьовують | OpenClaw ставить паузу всьому профілю ключа | Не ставити основною модель, що не відповідає; спершу перевірити її прямим запитом до API |
+| Після скрипта в `fallback_providers` Hermes стоїть `provider: auto` з `anthropic/claude-opus-4.6` | Типовий запасний запис Hermes, платна модель | Замінити ланцюжок на безкоштовні моделі (див. фазу 3, крок 4 у `CLAUDE.md`) |

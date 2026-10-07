@@ -33,7 +33,7 @@ $Utf8NoBom  = New-Object System.Text.UTF8Encoding $false
 # want: бажані моделі; '*' — шаблон по списку /models провайдера. Береться не більше $maxModels.
 $Catalog = @(
   @{ env='NVIDIA_API_KEY'; name='NVIDIA Build'; base='https://integrate.api.nvidia.com/v1'; primary=$true; maxModels=3
-     want=@('moonshotai/kimi-k2.5','z-ai/glm-5.1','deepseek-ai/deepseek-v3.2','qwen/qwen3.5*')
+     want=@('moonshotai/kimi-k3','z-ai/glm-5.3','deepseek-ai/deepseek-v4.1-flash','moonshotai/kimi-k2.6')
      hermes='nvidia'; ocMode='plugin'; ocProvider='nvidia' },
   @{ env='GEMINI_API_KEY'; name='Google AI Studio'; base='https://generativelanguage.googleapis.com/v1beta/openai'; primary=$false; maxModels=3
      want=@('gemini-3.5-flash','gemini-3.8-flash','gemini-2.5-pro','gemini-3.5-flash-lite')
