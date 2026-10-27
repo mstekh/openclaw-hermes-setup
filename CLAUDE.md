@@ -203,3 +203,7 @@ wsl.exe -d OpenClawGateway -e /usr/local/bin/openclaw pairing approve telegram <
 - Hermes: `%LOCALAPPDATA%\hermes\config.yaml.bak-<час>` і `.env.bak-<час>` (створюють скрипти).
 - OpenClaw: `~/.openclaw/openclaw.json.bak-<час>` у WSL; ключі: `openclaw models auth list` / `logout`.
 - MCP: `claude mcp remove hermes -s user`, `claude mcp remove openclaw -s user`.
+
+## OpenCode (безкоштовні агенти)
+
+Правило власника (2026-10-27), повний текст у `~/.claude/CLAUDE.md` (розділ «OpenCode»): `bash ~/.claude/orchestrator/opencode.sh -d <папка> "<вузьке питання>" </dev/null`, типово лише читання, не більше 2 паралельно, відповідь агента — не факт. Віддавати: рев'ю diff і пошук у коді. Не слати ключі, паролі, токени, особисті дані.
