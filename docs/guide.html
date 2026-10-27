@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Безкоштовні агенти для Claude</title>
+<meta name="description" content="Покрокове налаштування безкоштовних агентів для Claude Code: Hermes, OpenClaw, OpenCode з OpenRouter і kagent на GPU Kaggle, з готовими промптами.">
+<style>
+:root{
+  --bg:#f7f6f2;--card:#ffffff;--text:#1d1d1b;--text-2:#5b5a55;--border:#e3e0d8;
+  --accent:#1f5fd6;--accent-soft:#e8effc;--ok:#1d7a46;--ok-soft:#e5f4ea;--warn:#8a5a00;--warn-soft:#fbf1dc;
+  --code-bg:#f1efe9;--human:#7a3fb8;--human-soft:#f1e9fa;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141413;--card:#1e1e1c;--text:#ecebe6;--text-2:#a7a59d;--border:#33322e;
+  --accent:#7aa7ff;--accent-soft:#1d2a44;--ok:#6fcf97;--ok-soft:#173225;--warn:#f0c060;--warn-soft:#3a2e12;
+  --code-bg:#262623;--human:#c49cf2;--human-soft:#2e2340;}}
+:root[data-theme="dark"]{
+  --bg:#141413;--card:#1e1e1c;--text:#ecebe6;--text-2:#a7a59d;--border:#33322e;
+  --accent:#7aa7ff;--accent-soft:#1d2a44;--ok:#6fcf97;--ok-soft:#173225;--warn:#f0c060;--warn-soft:#3a2e12;
+  --code-bg:#262623;--human:#c49cf2;--human-soft:#2e2340;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:28px 16px 64px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:0 0 6px}
+p{margin:8px 0}
+a{color:var(--accent)}
+.lead{color:var(--text-2);font-size:17px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:20px 0 28px}
+.fact{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.fact b{display:block;font-size:20px}.fact span{color:var(--text-2);font-size:13.5px}
+.step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 18px 14px;margin:14px 0;position:relative}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;margin-right:8px;flex:none}
+.step h2{display:flex;align-items:center}
+.tag{display:inline-block;font-size:12.5px;padding:2px 9px;border-radius:99px;margin:2px 4px 2px 0;font-weight:600}
+.tag.you{background:var(--human-soft);color:var(--human)}.tag.cl{background:var(--accent-soft);color:var(--accent)}
+.tag.gpu{background:var(--warn-soft);color:var(--warn)}
+ul,ol{padding-left:22px;margin:8px 0}li{margin:3px 0}
+code{font-family:var(--mono);font-size:.92em;background:var(--code-bg);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}
+.prompt{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;margin:10px 0;overflow:hidden}
+.prompt header{display:flex;justify-content:space-between;align-items:center;padding:6px 8px 6px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-2)}
+.prompt pre{margin:0;padding:12px;white-space:pre-wrap;font:14px/1.5 var(--mono);overflow-wrap:anywhere}
+button.copy{font:600 13px system-ui,sans-serif;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;padding:6px 12px;min-height:34px;cursor:pointer}
+button.copy:active{transform:translateY(1px)}
+.note{border-left:4px solid var(--warn);background:var(--warn-soft);padding:10px 12px;border-radius:0 10px 10px 0;margin:10px 0}
+.good{border-left:4px solid var(--ok);background:var(--ok-soft);padding:10px 12px;border-radius:0 10px 10px 0;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+.tw{overflow-x:auto}
+footer{color:var(--text-2);font-size:13.5px;margin-top:30px}
+</style>
+</head>
+<body>
+<main>
+<h1>Безкоштовні агенти для Claude Code</h1>
+<p class="lead">Claude Code лишається головним: планує, вирішує й перевіряє. Рутину (прочитати багато файлів, написати чернетку, порівняти варіанти, перша версія коду) він віддає безкоштовним агентам. Так ліміт підписки Claude йде на рішення, а не на обсяг.</p>
+
+<div class="facts">
+  <div class="fact"><b>4 агенти</b><span>Hermes, OpenClaw, OpenCode з OpenRouter, kagent на GPU Kaggle</span></div>
+  <div class="fact"><b>0 грн</b><span>лише безкоштовні моделі й квоти</span></div>
+  <div class="fact"><b>≈1–2 год</b><span>налаштування, один раз</span></div>
+  <div class="fact"><b>Claude перевіряє</b><span>безкоштовні моделі помиляються частіше, тож кожну їхню відповідь перевіряють</span></div>
+</div>
+
+<p><span class="tag you">Ви</span> — дії, які робить людина. <span class="tag cl">Claude</span> — дає промпт, решту Claude Code робить сам. <span class="tag gpu">GPU</span> — витрачає квоту Kaggle.</p>
+
+<section class="step"><h2><span class="num">·</span>Хто що робить</h2>
+<div class="tw"><table>
+<tr><th>Агент</th><th>Де працює</th><th>Моделі</th><th>Що йому давати</th></tr>
+<tr><td><b>Hermes</b> (Nous Research)</td><td>Windows, бачить файли ПК</td><td>безкоштовні моделі Nous Portal, запасні — OpenRouter, Gemini, Copilot</td><td>перегляд файлів і логів, чернетки, друга думка</td></tr>
+<tr><td><b>OpenClaw</b></td><td>WSL (Linux у Windows)</td><td>OpenRouter <code>:free</code> з ланцюжком запасних</td><td>довгі задачі в Linux: скрипти, збирання, аналіз</td></tr>
+<tr><td><b>OpenCode</b> + <b>OpenRouter</b></td><td>будь-який термінал: Windows, Linux, macOS</td><td>десятки моделей <code>:free</code> (Qwen3-Coder, Nemotron, DeepSeek тощо) і вбудовані безкоштовні моделі OpenCode</td><td>код за зразком, тести, рефакторинг у теці проєкту, багатокрокові задачі з роздумами</td></tr>
+<tr><td><b>kagent</b></td><td>ваш ноутбук Kaggle, 2× Tesla T4</td><td>Qwen3-Coder 30B у ядрі Kaggle (Ollama)</td><td>великі чернетки коду й специфікацій, робочі сесії з файлами; ≈30 год GPU на тиждень безкоштовно</td></tr>
+</table></div>
+</section>
+
+<section class="step"><h2><span class="num">1</span>Акаунти й ключі</h2>
+<span class="tag you">Ви</span>
+<ul>
+  <li><b>Claude Code</b> — підписка Claude (Pro або Max).</li>
+  <li><b>OpenRouter</b> — openrouter.ai → Keys → Create Key. Безкоштовні моделі мають суфікс <code>:free</code>: ≈20 запитів на хвилину, 50 на день; після разового поповнення на $10 — 1000 на день (самі запити й далі безкоштовні).</li>
+  <li><b>Nous Portal</b> — для Hermes; вхід через браузер під час встановлення.</li>
+  <li><b>Kaggle</b> — kaggle.com, <i>Settings → Phone verification</i> (без цього немає GPU), потім <i>Settings → API → Create New Token</i>.</li>
+  <li>За бажанням: Google AI Studio (ключ Gemini), NVIDIA Build (≈40 запитів на хвилину), два Telegram-боти від @BotFather.</li>
+</ul>
+<div class="note">Ключі ніколи не вставляйте в чат з Claude і не комітьте. Їх кладуть у файл <code>keys.env</code> (він у <code>.gitignore</code>) або вводять у самій програмі (<code>/connect</code> в OpenCode). Безкоштовні тарифи можуть навчатися на ваших запитах: паролі, особисті дані й закритий код туди не відправляйте.</div>
+</section>
+
+<section class="step"><h2><span class="num">2</span>Hermes і OpenClaw (Windows)</h2>
+<span class="tag you">Ви</span> <span class="tag cl">Claude</span>
+<p>PowerShell <b>від адміністратора</b>, потім перезавантаження:</p>
+<div class="prompt"><header>PowerShell (адміністратор)<button class="copy">Копіювати</button></header><pre>wsl --install --no-distribution</pre></div>
+<p>Звичайний PowerShell:</p>
+<div class="prompt"><header>PowerShell<button class="copy">Копіювати</button></header><pre>winget install -e --id Anthropic.ClaudeCode; winget install -e --id Git.Git; winget install -e --id GitHub.cli; winget install -e --id OpenJS.NodeJS
+gh auth login
+gh repo clone mstekh/openclaw-hermes-setup; cd openclaw-hermes-setup; claude</pre></div>
+<div class="prompt"><header>Промпт для Claude<button class="copy">Копіювати</button></header><pre>Налаштуй усе за CLAUDE.md цього репозиторію: OpenClaw, Hermes, безкоштовні моделі з ланцюжками запасних, MCP-мости ask_hermes і ask_openclaw.
+Ключі я впишу сам у keys.env — скажи, коли. Усе, що потребує моїх рук (майстер у треї, вхід у Nous Portal, боти), проси окремим кроком.
+Наприкінці — таблиця стану: що працює, перевірено живим запитом, що ні.</pre></div>
+<p>Що попросить Claude: пройти майстер OpenClaw Companion у треї, увійти в Nous Portal, вписати ключі, натиснути «Дозволити», коли OpenClaw читає файли Windows.</p>
+</section>
+
+<section class="step"><h2><span class="num">3</span>OpenCode з безкоштовними моделями OpenRouter</h2>
+<span class="tag you">Ви</span> <span class="tag cl">Claude</span>
+<p>OpenCode — термінальний агент, схожий на Claude Code, але з будь-якою моделлю. Claude Code може викликати його сам однією командою і отримати готовий результат.</p>
+<div class="prompt"><header>Термінал (будь-яка система з Node.js)<button class="copy">Копіювати</button></header><pre>npm install -g opencode-ai
+opencode auth login        # оберіть OpenRouter і вставте ключ (у програму, не в чат)</pre></div>
+<div class="prompt"><header>Промпт для Claude<button class="copy">Копіювати</button></header><pre>Підключи OpenCode як безкоштовного помічника.
+1) Перевір `opencode --version` і що провайдер OpenRouter авторизований (`opencode auth list`).
+2) Склади список доступних безкоштовних моделей (`opencode models openrouter | grep ':free'`) і перевір 3 з них коротким запитом
+   через `opencode run -m openrouter/<модель> "..."`: час відповіді і чи відповідь осмислена. Обери основну й дві запасні.
+3) Допиши в мій глобальний ~/.claude/CLAUDE.md розділ «Делегування OpenCode»: які задачі віддавати (чернетки коду, тести за зразком,
+   перегляд багатьох файлів), як викликати (`opencode run -m ... "задача"` у теці проєкту, read-only, якщо не просив змін),
+   що не віддавати (секрети, push, деплой, фінальні рішення) і що кожну відповідь ти перевіряєш сам.
+   Перш ніж записати, покажи мені текст розділу.</pre></div>
+<p>Перевірка: попросіть Claude «віддай OpenCode написати тести для файлу X і перевір їх». Він має запустити OpenCode, прогнати тести й сказати, що виправив сам.</p>
+</section>
+
+<section class="step"><h2><span class="num">4</span>kagent: модель на безкоштовному GPU Kaggle</h2>
+<span class="tag you">Ви</span> <span class="tag cl">Claude</span> <span class="tag gpu">GPU</span>
+<p>У вашому ноутбуці Kaggle запускається Ollama з моделлю Qwen3-Coder 30B на двох Tesla T4. Claude Code звертається до неї через інструменти MCP: <code>kaggle_start</code>, <code>ask_kaggle</code>, <code>kaggle_session_ask</code> (робоча сесія з файлами), <code>kaggle_stop</code>. Ядро саме вимикається після простою, щоб не їсти квоту.</p>
+<p>Код — у репозиторії <code>mstekh/kaggle-projects</code>, тека <code>claude-kaggle-bridge</code> (доступ дає власниця репозиторію). Покладіть токен Kaggle у теку <code>.kaggle</code> домашньої теки, клонуйте репозиторій і запустіть <code>claude</code> у ньому.</p>
+<div class="prompt"><header>Промпт для Claude<button class="copy">Копіювати</button></header><pre>Підключи kagent за розділом «Підключити до Claude Code як інструмент (MCP kaggle)» у claude-kaggle-bridge/README.md.
+Мій логін Kaggle: [логін]. Токен уже лежить у ~/.kaggle — не читай його вміст і не виводь.
+1) Python ≥ 3.11 з пакетом kaggle (окреме віртуальне середовище), `kaggle kernels list --mine` має працювати.
+2) Ядро — під моїм акаунтом: KAGGLE_SERVE_ID=[логін]/claude-kaggle-serve і id у kernel_serve/kernel-metadata.json.
+3) npm install у claude-kaggle-bridge/mcp, `claude mcp add -s user kaggle ...` з потрібними змінними, `node selftest.mjs` без GPU.
+4) Живий запуск (≈6 хв квоти GPU) — лише після мого «ок»: kaggle_start → дочекатися ONLINE → один ask_kaggle → kaggle_stop.
+5) Допиши в ~/.claude/CLAUDE.md правило: великі чернетки й рутину спершу віддавати kagent (kaggle_session_ask, одна сесія на задачу),
+   потім перевіряти; kagent вигадує деталі й підробляє складні задачі, тож перевіряти версії, прапорці й чи код справді робить роботу.
+   Перш ніж записати, покажи мені текст.</pre></div>
+<div class="note">Холодний старт ядра коштує ≈6 хв квоти. Тому MCP ніколи не вмикає ядро сам: лише за <code>kaggle_start</code>. Квота — ≈30 год GPU на тиждень на акаунт.</div>
+</section>
+
+<section class="step"><h2><span class="num">5</span>Як цим користуватися щодня</h2>
+<span class="tag cl">Claude</span>
+<p>Після налаштування нічого запам'ятовувати не треба: правила лежать у <code>~/.claude/CLAUDE.md</code>. Можна підказувати прямо:</p>
+<div class="prompt"><header>Приклади промптів<button class="copy">Копіювати</button></header><pre>Віддай kagent першу версію модуля за цим описом, а сам зроби рев'ю й поверни йому список дефектів на доопрацювання.
+Нехай Hermes перегляне всі логи в теці logs/ і дасть підсумок до 15 рядків з file:line; висновки перевір сам.
+Віддай OpenCode (безкоштовна модель OpenRouter) тести за зразком tests/test_a.py для модуля b.py, прожени їх і виправ, що впало.</pre></div>
+<div class="tw"><table>
+<tr><th>Ознака задачі</th><th>Кому</th></tr>
+<tr><td>Великий обсяг, результат легко перевірити</td><td>безкоштовному агентові</td></tr>
+<tr><td>Секрети, особисті дані, закритий код</td><td>лише Claude</td></tr>
+<tr><td>Push, деплой, видалення, надсилання</td><td>лише Claude, після вашого «ок»</td></tr>
+<tr><td>Остаточне рішення й перевірка</td><td>Claude</td></tr>
+<tr><td>Одна команда, один пошук</td><td>Claude сам: так швидше</td></tr>
+</table></div>
+</section>
+
+<section class="step"><h2><span class="num">?</span>Якщо щось не так</h2>
+<ul>
+  <li><b>429 / rate limit</b> — вичерпано безкоштовний ліміт провайдера. Агенти самі переходять на запасні моделі, бо на 429 провайдер ставить паузу (у Nous бувало до 34 хв). Не запускайте більше 2–3 запитів на агента одночасно.</li>
+  <li><b>Модель OpenRouter зникла</b> — безкоштовні моделі ротуються; попросіть Claude оновити список.</li>
+  <li><b>kagent не стартує</b> — Kaggle без підтвердженого телефону або вичерпана тижнева квота GPU (<code>kaggle_status</code> скаже).</li>
+  <li><b>Агент звітує «готово», а код нічого не робить</b> — так буває з безкоштовними моделями; саме тому Claude перевіряє кожну відповідь тестами.</li>
+  <li>Пастки, на які вже наступили: <code>docs/pitfalls.md</code>; результати моделей: <code>docs/free-models.md</code>.</li>
+</ul>
+</section>
+
+<footer>Репозиторій: <a href="https://github.com/mstekh/openclaw-hermes-setup">github.com/mstekh/openclaw-hermes-setup</a>. Інструкція для Claude: <code>CLAUDE.md</code>. Ліміти безкоштовних тарифів змінюються часто — перевіряйте в кабінетах провайдерів.</footer>
+</main>
+<script>
+document.querySelectorAll('button.copy').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=b.closest('.prompt').querySelector('pre').innerText;
+    var done=function(){b.textContent='Скопійовано';setTimeout(function(){b.textContent='Копіювати'},1500)};
+    if(navigator.clipboard){navigator.clipboard.writeText(t).then(done,function(){})}
+  });
+});
+</script>
+</body>
+</html>

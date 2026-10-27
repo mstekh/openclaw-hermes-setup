@@ -9,6 +9,9 @@
 
 Роботу поділено так: **ти робиш лише те, що вимагає людини** (права адміністратора, вхід у браузері, створення ботів, ключі). Усе інше робить Claude Code за файлом [CLAUDE.md](CLAUDE.md).
 
+**Покрокова веб-сторінка з промптами для всіх безкоштовних агентів (Hermes, OpenClaw, OpenCode + OpenRouter, kagent на Kaggle):**
+https://raw.githack.com/mstekh/openclaw-hermes-setup/main/docs/guide.html
+
 ---
 
 ## Що робиш ти (≈ 20 хвилин активних дій)
